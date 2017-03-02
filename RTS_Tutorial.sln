@@ -1,0 +1,23 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{DE731A6F-11D9-7B07-F9BB-A7E38DAE48C7}") = "RTS_Tutorial", "Assembly-CSharp.csproj", "{18739341-10E9-C473-1635-04B635EFDEF1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{18739341-10E9-C473-1635-04B635EFDEF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18739341-10E9-C473-1635-04B635EFDEF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18739341-10E9-C473-1635-04B635EFDEF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18739341-10E9-C473-1635-04B635EFDEF1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal
