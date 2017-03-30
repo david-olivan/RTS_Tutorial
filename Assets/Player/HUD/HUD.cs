@@ -5,20 +5,30 @@ using RTS;
 public class HUD : MonoBehaviour {
 
     public GUISkin resourceSkin, ordersSkin, selectBoxSkin;
+    public GUISkin mouseCursorSkin;
+
+    public Texture2D activeCursor;
+    public Texture2D selectCursor, leftCursor, rightCursor, upCursor, downCursor;
+    public Texture2D[] moveCursors, attackCursors, harvestCursors;
 
     private const int ORDERS_BAR_WIDTH = 150, RESOURCE_BAR_HEIGHT = 40;
     private const int SELECTION_NAME_HEIGHT = 15;
 
     private Player player;
 
+    private CursorState activeCursorState;
+    private int currentFrame = 0;
+
     private void Start () {
         player = transform.root.GetComponent<Player> ();
         ResourceManager.StoreSelectBoxItems (selectBoxSkin);
+        SetCursorState (CursorState.Select);
     }
     private void OnGUI () {
         if (player && player.human) {
             DrawOrdersBar ();
             DrawResourceBar ();
+            DrawMouseCursor ();
         }
     }
 
@@ -35,6 +45,83 @@ public class HUD : MonoBehaviour {
         return insideWidth && insideHeight;
     }
 
+    public void SetCursorState (CursorState newState) {
+        activeCursorState = newState;
+        switch(newState) {
+            case CursorState.Select:
+                activeCursor = selectCursor;
+                break;
+            case CursorState.Attack:
+                currentFrame = (int) Time.time % attackCursors.Length;
+                activeCursor = attackCursors[currentFrame];
+                break;
+            case CursorState.Harvest:
+                currentFrame = (int) Time.time % harvestCursors.Length;
+                activeCursor = harvestCursors[currentFrame];
+                break;
+            case CursorState.Move:
+                currentFrame = (int) Time.time % moveCursors.Length;
+                activeCursor = moveCursors[currentFrame];
+                break;
+            case CursorState.PanLeft:
+                activeCursor = leftCursor;
+                break;
+            case CursorState.PanRight:
+                activeCursor = rightCursor;
+                break;
+            case CursorState.PanUp:
+                activeCursor = upCursor;
+                break;
+            case CursorState.PanDown:
+                activeCursor = downCursor;
+                break;
+            default: break;
+        }
+    }
+
+    private void UpdateCursorAnimation () {
+        // Sequence animation for cursor (based on more than one image for the cursor)
+        // change once per second, loops through array of images
+        if (activeCursorState == CursorState.Move) {
+            currentFrame = (int) Time.time % moveCursors.Length;
+            activeCursor = moveCursors[currentFrame];
+        } else if (activeCursorState == CursorState.Attack) {
+            currentFrame = (int) Time.time & attackCursors.Length;
+            activeCursor = attackCursors[currentFrame];
+        } else if (activeCursorState == CursorState.Harvest) {
+            currentFrame = (int) Time.time % harvestCursors.Length;
+            activeCursor = harvestCursors[currentFrame];
+        }
+    }
+    private Rect GetCursorDrawPosition () {
+        // Set base position for custom cursor image
+        float leftPos = Input.mousePosition.x;
+        float topPos = Screen.height - Input.mousePosition.y;   // Screen draw coordinates are inverted
+        // Adjust position base on the type of cursor being shown
+        if (activeCursorState == CursorState.PanRight) { leftPos = Screen.width - activeCursor.width; }
+        else if (activeCursorState == CursorState.PanDown) { topPos = Screen.height - activeCursor.height; }
+        else if (activeCursorState == CursorState.Move || activeCursorState == CursorState.Select || activeCursorState == CursorState.Harvest) {
+            topPos -= activeCursor.height / 2;
+            leftPos -= activeCursor.width / 2;
+        }
+        return new Rect (leftPos, topPos, activeCursor.width, activeCursor.height);
+    }
+
+    private void DrawMouseCursor () {
+        bool mouseOverHud = !MouseInBounds () && activeCursorState != CursorState.PanRight && activeCursorState != CursorState.PanUp;
+
+        if (mouseOverHud) {
+            Cursor.visible = true;
+        } else {
+            Cursor.visible = false;
+            GUI.skin = mouseCursorSkin;
+            GUI.BeginGroup (new Rect (0, 0, Screen.width, Screen.height));
+            UpdateCursorAnimation ();
+            Rect cursorPosition = GetCursorDrawPosition ();
+            GUI.Label (cursorPosition, activeCursor);
+            GUI.EndGroup ();
+        }
+    }
     private void DrawOrdersBar () {
         GUI.skin = ordersSkin;
         GUI.BeginGroup (new Rect (Screen.width - ORDERS_BAR_WIDTH, RESOURCE_BAR_HEIGHT, ORDERS_BAR_WIDTH, Screen.height - RESOURCE_BAR_HEIGHT));
