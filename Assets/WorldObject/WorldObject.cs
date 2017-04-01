@@ -29,6 +29,13 @@ public class WorldObject : MonoBehaviour {
         if (currentlySelected) { DrawSelection (); }
     }
 
+    public virtual void SetHoverState (GameObject hoverObject) {
+        // Only handle input if owned by a human player and currently selected
+        if (player && player.human && currentlySelected) {
+            if (hoverObject.name != "Ground") { player.hud.SetCursorState (CursorState.Select); }
+        }
+    }
+
     protected virtual void DrawSelectionBox (Rect selectBox) {
         GUI.Box (selectBox, "");
     }
@@ -51,7 +58,7 @@ public class WorldObject : MonoBehaviour {
     public virtual void MouseClick (GameObject hitObject, Vector3 hitPoint, Player controller) {
         // Only handle input if currently selected
         if (currentlySelected && hitObject && hitObject.name != "Ground") {
-            WorldObject worldObject = hitObject.transform.root.GetComponent<WorldObject> ();
+            WorldObject worldObject = hitObject.transform.parent.GetComponent<WorldObject> ();
             // Clicked on another selectable object
             if (worldObject) { ChangeSelection (worldObject, controller); }
         }
