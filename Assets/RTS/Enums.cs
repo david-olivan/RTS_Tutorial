@@ -10,4 +10,6 @@
         PanDown,
         Harvest
     }
+
+    public enum ResourceType { Money, Power }
 }
