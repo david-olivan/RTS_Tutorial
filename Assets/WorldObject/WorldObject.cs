@@ -29,6 +29,14 @@ public class WorldObject : MonoBehaviour {
         if (currentlySelected) { DrawSelection (); }
     }
 
+    public bool IsOwnedBy (Player owner) {
+        if (player && player.Equals (owner)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public virtual void SetHoverState (GameObject hoverObject) {
         // Only handle input if owned by a human player and currently selected
         if (player && player.human && currentlySelected) {

@@ -4,8 +4,6 @@ using RTS;
 
 public class UserInput : MonoBehaviour {
 
-    //public HUD hud;
-
 	private Player player;
 
 	private void Start () {
@@ -21,7 +19,7 @@ public class UserInput : MonoBehaviour {
 
     private void MouseActivity () {
         if (Input.GetMouseButtonDown(0)) { LeftMouseClick (); }
-        else if (Input.GetMouseButtonDown(2)) { RightMouseClick (); }
+        else if (Input.GetMouseButtonDown(1)) { RightMouseClick (); }
         MouseHover ();
     }
     private void LeftMouseClick () {
@@ -51,7 +49,8 @@ public class UserInput : MonoBehaviour {
         if (player.hud.MouseInBounds ()) {
             GameObject hoverObject = FindHitObject ();
             if (hoverObject) {
-                if (player.SelectedObject) { player.SelectedObject.SetHoverState (hoverObject); } else if (hoverObject.name != "Ground") {
+                if (player.SelectedObject) { player.SelectedObject.SetHoverState (hoverObject); } 
+                else if (hoverObject.name != "Ground") {
                     Player owner = hoverObject.transform.root.GetComponent<Player> ();
                     if (owner) {
                         Unit unit = hoverObject.transform.parent.GetComponent<Unit> ();

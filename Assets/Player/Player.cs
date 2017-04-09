@@ -8,8 +8,8 @@ public class Player : MonoBehaviour {
 	public bool human;
     public HUD hud;
     public WorldObject SelectedObject { get; set; }
-
     public int startMoney, startMoneyLimit, startPower, startPowerLimit;
+
     private Dictionary<ResourceType, int> resources, resourceLimits;
 
     private void Awake () {
@@ -27,13 +27,17 @@ public class Player : MonoBehaviour {
         }
 	}
 
+    public void AddUnit (string unitName, Vector3 spawnPoint, Quaternion rotation) {
+        Units units = GetComponentInChildren<Units> ();
+        GameObject newUnit = (GameObject) Instantiate (ResourceManager.GetUnit (unitName), spawnPoint, rotation);
+        newUnit.transform.parent = units.transform;
+    }
     public void AddResource (ResourceType type, int amount) {
         resources[type] += amount;
     }
     public void IncrementResourceLimit (ResourceType type, int amount) {
         resourceLimits[type] += amount;
     }
-
     private void AddStartResourceLimits () {
         IncrementResourceLimit (ResourceType.Money, startMoneyLimit);
         IncrementResourceLimit (ResourceType.Power, startPowerLimit);
